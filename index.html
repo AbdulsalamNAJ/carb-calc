@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const foodItems = [];
+
+function addFoodItem() {
+  const name = document.getElementById("food-name").value;
+  const carbs = parseFloat(document.getElementById("carbs-food").value);
+  const proteins = parseFloat(document.getElementById("proteins-food").value);
+  const fats = parseFloat(document.getElementById("fats-food").value);
+  
+  const food = { name, carbs, proteins, fats };
+  foodItems.push(food);
+  updateFoodList();
+}
+
+function updateFoodList() {
+  const foodList = document.getElementById("food-list");
+  foodList.innerHTML = "";
+  foodItems.forEach(food => {
+    const item = `<p>${food.name} - Carbs: ${food.carbs}g, Proteins: ${food.proteins}g, Fats: ${food.fats}g</p>`;
+    foodList.innerHTML += item;
+  });
+}
+
+function calculateMeals() {
+  const dailyCarbs = parseFloat(document.getElementById("carbs").value);
+  const dailyProteins = parseFloat(document.getElementById("proteins").value);
+  const dailyFats = parseFloat(document.getElementById("fats").value);
+  
+  let totalCarbs = 0, totalProteins = 0, totalFats = 0;
+  let servings = {};
+
+  foodItems.forEach(food => {
+    servings[food.name] = {
+      carbs: (dailyCarbs / food.carbs).toFixed(2),
+      proteins: (dailyProteins / food.proteins).toFixed(2),
+      fats: (dailyFats / food.fats).toFixed(2)
+    };
+  });
+  
+  displayResults(servings);
+}
+
+function displayResults(servings) {
+  let result = "<h3>Suggested Servings</h3>";
+  for (let food in servings) {
+    result += `<p>${food}: ${Math.min(servings[food].carbs, servings[food].proteins, servings[food].fats)} servings</p>`;
+  }
+  document.getElementById("results").innerHTML = result;
+}
+    </script>
+    <label for="carbs">Daily Carbohydrates (g): </label>
+    <input type="number" id="carbs" name="carbs" required>
+
+    <label for="proteins">Daily Proteins (g): </label>
+    <input type="number" id="proteins" name="proteins" required>
+
+    <label for="fats">Daily Fats (g): </label>
+    <input type="number" id="fats" name="fats" required>
+
+    <button onclick="calculateMeals()">Calculate</button>
+    <div id="food-items">
+        <h3>Input Food Items</h3>
+        <label for="food-name">Food Name: </label>
+        <input type="text" id="food-name">
+    
+        <label for="carbs-food">Carbs (g): </label>
+        <input type="number" id="carbs-food">
+    
+        <label for="proteins-food">Proteins (g): </label>
+        <input type="number" id="proteins-food">
+    
+        <label for="fats-food">Fats (g): </label>
+        <input type="number" id="fats-food">
+    
+        <button onclick="addFoodItem()">Add Food</button>
+    </div>
+    
+    <div id="food-list">
+        <!-- List of foods will appear here -->
+    </div>
+    <div id="results"></div>
+</body>
+</html>
